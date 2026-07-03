@@ -109,6 +109,40 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("cart", JSON.stringify(cart))
   }, [cart])
 
+  // Load products from localStorage on initial render
+  useEffect(() => {
+    const savedProducts = localStorage.getItem("products")
+    if (savedProducts) {
+      try {
+        setProducts(JSON.parse(savedProducts))
+      } catch (error) {
+        console.error("Failed to parse products from localStorage:", error)
+      }
+    }
+  }, [])
+
+  // Save products to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("products", JSON.stringify(products))
+  }, [products])
+
+  // Load categories from localStorage on initial render
+  useEffect(() => {
+    const savedCategories = localStorage.getItem("categories")
+    if (savedCategories) {
+      try {
+        setCategories(JSON.parse(savedCategories))
+      } catch (error) {
+        console.error("Failed to parse categories from localStorage:", error)
+      }
+    }
+  }, [])
+
+  // Save categories to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("categories", JSON.stringify(categories))
+  }, [categories])
+
   const addToCart = useCallback((product: Product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id)

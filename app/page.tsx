@@ -30,13 +30,13 @@ export default function POSPage() {
                 className={cn(
                   "inline-flex w-fit items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
                   scannerActive
-                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
+                    ? "border-sky-500/30 bg-sky-500/10 text-sky-600"
                     : "border-muted bg-muted text-muted-foreground",
                 )}
               >
                 <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-500 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-sky-500" />
                 </span>
                 <ScanBarcode className="h-3.5 w-3.5" />
                 Scanner: Active (Listening for Hardware Input)

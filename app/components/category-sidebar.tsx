@@ -46,11 +46,11 @@ export default function CategorySidebar({ selectedCategory, onSelectCategory }: 
               key={category.id}
               variant="ghost"
               className={cn(
-                "flex h-auto flex-col items-center justify-center py-4 border bg-transparent",
+                "flex h-auto flex-col items-center justify-center py-4 border bg-white",
                 selectedCategory === category.id
-                  ? "border-2 border-primary text-foreground font-medium"
-                  : "border-muted text-muted-foreground hover:border-muted-foreground hover:text-foreground",
-                "hover:bg-transparent",
+                  ? "border-2 border-blue-600 text-blue-600 font-medium bg-blue-50"
+                  : "border-slate-200 text-slate-600 hover:border-blue-400 hover:text-blue-600",
+                "hover:bg-blue-50",
               )}
               onClick={() => onSelectCategory(category.id)}
             >

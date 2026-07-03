@@ -4,7 +4,7 @@ export const products: Product[] = [
   {
     id: 1,
     name: "Lay's Classic Chips",
-    price: 1.99,
+    price: 35.00,
     image: "/lays-classic-chips.png",
     category: "snacks",
     barcode: "028400001",
@@ -12,7 +12,7 @@ export const products: Product[] = [
   {
     id: 2,
     name: "Oreo Cookies",
-    price: 2.49,
+    price: 42.00,
     image: "/oreo-cookies.png",
     category: "snacks",
     barcode: "044000002",
@@ -20,7 +20,7 @@ export const products: Product[] = [
   {
     id: 3,
     name: "Coca-Cola 500ml",
-    price: 1.89,
+    price: 28.00,
     image: "/coca-cola-bottle.png",
     category: "beverages",
     barcode: "049000003",
@@ -28,7 +28,7 @@ export const products: Product[] = [
   {
     id: 4,
     name: "Mineral Water 1L",
-    price: 1.29,
+    price: 20.00,
     image: "/mineral-water-1l.png",
     category: "beverages",
     barcode: "012000004",
@@ -36,7 +36,7 @@ export const products: Product[] = [
   {
     id: 5,
     name: "Red Bull",
-    price: 2.99,
+    price: 55.00,
     image: "/red-bull-can.png",
     category: "beverages",
     barcode: "090000005",
@@ -44,7 +44,7 @@ export const products: Product[] = [
   {
     id: 6,
     name: "Instant Noodles",
-    price: 0.89,
+    price: 18.00,
     image: "/instant-noodles.png",
     category: "groceries",
     barcode: "070000006",
@@ -52,15 +52,15 @@ export const products: Product[] = [
   {
     id: 7,
     name: "White Bread",
-    price: 2.29,
+    price: 45.00,
     image: "/white-bread.png",
     category: "groceries",
     barcode: "072000007",
   },
   {
     id: 8,
-    name: "Whole Milk 1 Gallon",
-    price: 3.79,
+    name: "Whole Milk 1L",
+    price: 85.00,
     image: "/whole-milk-gallon.png",
     category: "groceries",
     barcode: "021000008",
@@ -68,7 +68,7 @@ export const products: Product[] = [
   {
     id: 9,
     name: "Pocket Tissues",
-    price: 0.99,
+    price: 15.00,
     image: "/pocket-tissues.png",
     category: "household",
     barcode: "037000009",
@@ -76,7 +76,7 @@ export const products: Product[] = [
   {
     id: 10,
     name: "Dish Soap",
-    price: 1.49,
+    price: 38.00,
     image: "/dish-soap.png",
     category: "household",
     barcode: "035000010",

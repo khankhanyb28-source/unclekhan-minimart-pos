@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gray-100`}>
+      <body className={`${inter.className} bg-slate-50`}>
         <CartProvider>{children}</CartProvider>
         <Toaster richColors position="top-right" />
       </body>

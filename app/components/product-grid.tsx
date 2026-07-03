@@ -25,19 +25,19 @@ export default function ProductGrid({ category, searchQuery }: ProductGridProps)
       {filteredProducts.map((product) => (
         <Card
           key={product.id}
-          className="overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer group"
+          className="overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer group bg-white border-slate-200"
           onClick={() => addToCart(product)}
         >
           <div className="relative aspect-square">
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100 z-10">
+            <div className="absolute inset-0 flex items-center justify-center bg-blue-600/80 opacity-0 transition-opacity group-hover:opacity-100 z-10">
               <PlusCircle className="h-10 w-10 text-white" />
             </div>
             <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
           </div>
-          <CardContent className="p-3">
+          <CardContent className="p-3 bg-white">
             <div>
-              <h3 className="font-medium line-clamp-1">{product.name}</h3>
-              <p className="text-sm text-muted-foreground">${product.price.toFixed(2)}</p>
+              <h3 className="font-medium line-clamp-1 text-slate-800">{product.name}</h3>
+              <p className="text-sm text-slate-600">₱{product.price.toFixed(2)}</p>
             </div>
           </CardContent>
         </Card>

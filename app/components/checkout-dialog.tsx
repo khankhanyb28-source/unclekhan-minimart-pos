@@ -19,12 +19,13 @@ import { cn } from "@/lib/utils"
 import { useCart } from "../context/cart-context"
 import { buildReceiptLines } from "../lib/receipt"
 
-const QUICK_CASH = [5, 10, 20, 50, 100]
+const QUICK_CASH = [20, 50, 100, 200, 500, 1000]
 
 const PAYMENT_METHODS = [
   { value: "cash", label: "Cash", icon: Wallet },
-  { value: "card", label: "Card", icon: CreditCard },
-  { value: "qr", label: "Mobile / QR Pay", icon: QrCode },
+  { value: "card", label: "Credit/Debit Card", icon: CreditCard },
+  { value: "gcash", label: "GCash", icon: QrCode },
+  { value: "maya", label: "Maya", icon: QrCode },
 ]
 
 export default function CheckoutDialog() {
@@ -57,7 +58,7 @@ export default function CheckoutDialog() {
 
   const handleConfirm = () => {
     if (!canConfirm) return
-    const changeMsg = isCash && changeDue > 0 ? ` Change due: $${changeDue.toFixed(2)}.` : ""
+    const changeMsg = isCash && changeDue > 0 ? ` Change due: ₱${changeDue.toFixed(2)}.` : ""
     toast.success("Transaction complete", {
       description: `Receipt printed via ${paymentLabel}.${changeMsg}`,
       icon: <CheckCircle2 className="h-4 w-4" />,
@@ -71,16 +72,16 @@ export default function CheckoutDialog() {
   return (
     <Dialog open={checkoutOpen} onOpenChange={(open) => (open ? null : closeCheckout())}>
       <DialogContent className="max-w-4xl gap-0 overflow-hidden p-0">
-        <DialogHeader className="border-b bg-primary px-6 py-4">
-          <DialogTitle className="text-primary-foreground">Checkout &amp; Payment</DialogTitle>
+        <DialogHeader className="border-b bg-blue-600 px-6 py-4">
+          <DialogTitle className="text-white">Checkout &amp; Payment</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-0 md:grid-cols-2">
           {/* Left: payment processing */}
           <div className="flex flex-col gap-5 p-6">
-            <div className="flex items-baseline justify-between rounded-lg bg-accent px-4 py-3">
-              <span className="text-sm font-medium text-accent-foreground">Amount Due</span>
-              <span className="text-2xl font-bold text-primary">${cartTotal.toFixed(2)}</span>
+            <div className="flex items-baseline justify-between rounded-lg bg-blue-50 px-4 py-3 border border-blue-200">
+              <span className="text-sm font-medium text-blue-700">Amount Due</span>
+              <span className="text-2xl font-bold text-blue-600">₱{cartTotal.toFixed(2)}</span>
             </div>
 
             <div className="space-y-2">
@@ -112,14 +113,15 @@ export default function CheckoutDialog() {
                         key={amount}
                         type="button"
                         variant="outline"
+                        className="border-blue-300 text-blue-700 hover:bg-blue-50"
                         onClick={() => setCashReceived(String(amount))}
                       >
-                        ${amount}
+                        ₱{amount}
                       </Button>
                     ))}
                     <Button
                       type="button"
-                      variant="secondary"
+                      className="bg-blue-600 text-white hover:bg-blue-700"
                       onClick={() => setCashReceived(cartTotal.toFixed(2))}
                     >
                       Exact
@@ -143,47 +145,47 @@ export default function CheckoutDialog() {
                 </div>
               </>
             ) : (
-              <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-700">
                 {paymentLabel} selected. The exact amount of{" "}
-                <span className="font-semibold text-foreground">${cartTotal.toFixed(2)}</span> will be
+                <span className="font-semibold text-blue-900">₱{cartTotal.toFixed(2)}</span> will be
                 charged on confirmation.
               </div>
             )}
 
             <div
               className={cn(
-                "flex items-baseline justify-between rounded-lg px-4 py-3",
-                changeDue >= 0 ? "bg-success/10" : "bg-destructive/10",
+                "flex items-baseline justify-between rounded-lg px-4 py-3 border",
+                changeDue >= 0 ? "bg-sky-50 border-sky-200" : "bg-red-50 border-red-200",
               )}
             >
               <span className="text-sm font-medium">Change Due</span>
               <span
                 className={cn(
                   "text-2xl font-bold",
-                  changeDue >= 0 ? "text-success" : "text-destructive",
+                  changeDue >= 0 ? "text-sky-600" : "text-red-600",
                 )}
               >
-                ${Math.max(0, changeDue).toFixed(2)}
+                ₱{Math.max(0, changeDue).toFixed(2)}
               </span>
             </div>
             {isCash && received > 0 && received < cartTotal && (
-              <p className="text-sm text-destructive">
-                Insufficient cash. ${(cartTotal - received).toFixed(2)} short.
+              <p className="text-sm text-red-600">
+                Insufficient cash. ₱{(cartTotal - received).toFixed(2)} short.
               </p>
             )}
           </div>
 
           {/* Right: 58mm receipt preview */}
-          <div className="flex flex-col border-t bg-muted/40 p-6 md:border-l md:border-t-0">
-            <div className="mb-3 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+          <div className="flex flex-col border-t border-slate-200 bg-slate-50 p-6 md:border-l md:border-t-0">
+            <div className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-600">
               <ReceiptIcon className="h-4 w-4" />
               Receipt Preview (58mm / 32 chars)
             </div>
-            <pre className="flex-1 overflow-auto whitespace-pre rounded-md border border-dashed bg-card p-4 font-mono text-[11px] leading-tight text-foreground">
+            <pre className="flex-1 overflow-auto whitespace-pre rounded-md border border-dashed border-slate-300 bg-white p-4 font-mono text-[11px] leading-tight text-slate-800">
               {receiptText}
             </pre>
             <Button
-              className="mt-4 w-full bg-success text-success-foreground hover:bg-success/90"
+              className="mt-4 w-full bg-blue-600 text-white hover:bg-blue-700"
               size="lg"
               disabled={!canConfirm}
               onClick={handleConfirm}

@@ -74,23 +74,23 @@ export function buildReceiptLines(items: ReceiptLineItem[], total: number, optio
       for (const line of wrapText(item.name)) {
         lines.push(line)
       }
-      const qtyLabel = `  ${item.quantity} x $${item.price.toFixed(2)}`
-      const lineTotal = `$${(item.price * item.quantity).toFixed(2)}`
+      const qtyLabel = `  ${item.quantity} x ₱${item.price.toFixed(2)}`
+      const lineTotal = `₱${(item.price * item.quantity).toFixed(2)}`
       lines.push(padLine(qtyLabel, lineTotal))
     }
   }
 
   lines.push(DIVIDER)
-  lines.push(padLine("TOTAL", `$${total.toFixed(2)}`))
+  lines.push(padLine("TOTAL", `₱${total.toFixed(2)}`))
 
   if (options.paymentLabel) {
     lines.push(padLine("PAYMENT", options.paymentLabel))
   }
   if (typeof options.cashReceived === "number" && options.cashReceived > 0) {
-    lines.push(padLine("CASH", `$${options.cashReceived.toFixed(2)}`))
+    lines.push(padLine("CASH", `₱${options.cashReceived.toFixed(2)}`))
   }
   if (typeof options.changeDue === "number") {
-    lines.push(padLine("CHANGE", `$${options.changeDue.toFixed(2)}`))
+    lines.push(padLine("CHANGE", `₱${options.changeDue.toFixed(2)}`))
   }
 
   lines.push(DIVIDER)

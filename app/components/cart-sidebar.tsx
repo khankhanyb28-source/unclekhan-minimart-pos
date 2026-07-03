@@ -19,16 +19,16 @@ export default function CartSidebar() {
   return (
     <div
       className={cn(
-        "flex w-80 flex-col border-l bg-card transition-all duration-300",
-        cartFlash && "ring-4 ring-inset ring-success",
+        "flex w-80 flex-col border-l bg-white transition-all duration-300",
+        cartFlash && "ring-4 ring-inset ring-sky-400",
       )}
     >
-      <div className="flex items-center justify-between border-b p-4">
+      <div className="flex items-center justify-between border-b border-slate-200 p-4 bg-blue-600 text-white">
         <h2 className="flex items-center text-lg font-semibold">
           <ShoppingCart className="mr-2 h-5 w-5" />
           Cart
         </h2>
-        <span className="rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground">
+        <span className="rounded-full bg-blue-500 px-2 py-1 text-xs font-medium text-white">
           {itemCount} items
         </span>
       </div>
@@ -50,9 +50,9 @@ export default function CartSidebar() {
                 <div className="flex flex-1 flex-col">
                   <div className="flex justify-between">
                     <h3 className="font-medium line-clamp-1">{item.name}</h3>
-                    <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="font-medium">₱{(item.price * item.quantity).toFixed(2)}</p>
                   </div>
-                  <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</p>
+                  <p className="text-sm text-muted-foreground">₱{item.price.toFixed(2)} each</p>
                   <div className="mt-auto flex items-center justify-between">
                     <div className="flex items-center">
                       <Button
@@ -89,18 +89,18 @@ export default function CartSidebar() {
         )}
       </div>
 
-      <div className="border-t p-4">
+      <div className="border-t border-slate-200 p-4">
         <div className="mb-4 space-y-2">
           <div className="flex justify-between">
             <p>Subtotal</p>
-            <p>${cartTotal.toFixed(2)}</p>
+            <p>₱{cartTotal.toFixed(2)}</p>
           </div>
           <div className="flex justify-between text-lg font-bold">
             <p>Total</p>
-            <p className="text-success">${cartTotal.toFixed(2)}</p>
+            <p className="text-sky-600">₱{cartTotal.toFixed(2)}</p>
           </div>
         </div>
-        <Button className="w-full" size="lg" disabled={cart.length === 0} onClick={handleCheckout}>
+        <Button className="w-full bg-blue-600 hover:bg-blue-700" size="lg" disabled={cart.length === 0} onClick={handleCheckout}>
           Checkout
         </Button>
 
