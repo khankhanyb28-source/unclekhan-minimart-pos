@@ -20,7 +20,7 @@ export default function CheckoutPage() {
 
   const paymentLabel = paymentMethod === "cash" ? "Cash" : "Credit/Debit Card"
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     const receiptNumber = createReceiptNumber()
     const timestamp = new Date().toLocaleString()
     saveTransaction({
@@ -35,7 +35,10 @@ export default function CheckoutPage() {
       receiptNumber,
       timestamp,
     }).join("\n")
-    printReceipt(receiptText, { suppressFallbackToast: true })
+    await printReceipt(receiptText, {
+      suppressFallbackToast: true,
+      openDrawerAfterPrint: paymentMethod === "cash",
+    })
     router.push("/success")
   }
 

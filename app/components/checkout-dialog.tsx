@@ -64,7 +64,7 @@ export default function CheckoutDialog() {
     [cart, cartTotal, paymentLabel, isCash, received, changeDue, receiptNumber],
   )
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!canConfirm) return
     const timestamp = new Date().toLocaleString()
     saveTransaction({
@@ -76,7 +76,10 @@ export default function CheckoutDialog() {
       receiptNumber,
       timestamp,
     })
-    printReceipt(receiptText, { suppressFallbackToast: true })
+    await printReceipt(receiptText, {
+      suppressFallbackToast: true,
+      openDrawerAfterPrint: isCash,
+    })
     const changeMsg = isCash && changeDue > 0 ? ` Change due: ₱${changeDue.toFixed(2)}.` : ""
     toast.success("Transaction complete", {
       description: `Receipt sent to printer via ${paymentLabel}.${changeMsg}`,

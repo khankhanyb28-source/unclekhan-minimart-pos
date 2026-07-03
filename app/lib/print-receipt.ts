@@ -3,6 +3,7 @@ import { isLocalPrinterServiceSupported, printViaLocalService } from "./printer-
 
 export interface PrintOptions {
   suppressFallbackToast?: boolean
+  openDrawerAfterPrint?: boolean
 }
 
 /**
@@ -12,7 +13,7 @@ export interface PrintOptions {
 export async function printReceipt(receiptText: string, options?: PrintOptions) {
   if (isLocalPrinterServiceSupported()) {
     try {
-      await printViaLocalService(receiptText)
+      await printViaLocalService(receiptText, Boolean(options?.openDrawerAfterPrint))
       if (!options?.suppressFallbackToast) toast.success("Receipt sent to local printer")
       return
     } catch (error) {
@@ -71,7 +72,12 @@ export async function printReceipt(receiptText: string, options?: PrintOptions) 
 
   document.body.appendChild(container)
 
-  const cleanup = () => container.remove()
-  window.addEventListener("afterprint", cleanup, { once: true })
-  window.print()
+  await new Promise<void>((resolve) => {
+    const cleanup = () => {
+      container.remove()
+      resolve()
+    }
+    window.addEventListener("afterprint", cleanup, { once: true })
+    window.print()
+  })
 }

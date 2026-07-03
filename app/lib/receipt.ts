@@ -1,7 +1,7 @@
 // 58mm thermal printer receipt formatting helpers.
 // Pure functions, no dependencies, fully client-side friendly.
 
-export const RECEIPT_WIDTH = 30
+export const RECEIPT_WIDTH = 32
 export const DIVIDER = "-".repeat(RECEIPT_WIDTH)
 
 export interface ReceiptLineItem {
