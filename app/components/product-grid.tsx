@@ -5,7 +5,6 @@ import { PlusCircle } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { useCart } from "../context/cart-context"
-import { products } from "../data/products"
 
 interface ProductGridProps {
   category: string
@@ -13,7 +12,7 @@ interface ProductGridProps {
 }
 
 export default function ProductGrid({ category, searchQuery }: ProductGridProps) {
-  const { addToCart } = useCart()
+  const { addToCart, products } = useCart()
 
   const filteredProducts = products.filter((product) => {
     const matchesCategory = category === "all" || product.category === category

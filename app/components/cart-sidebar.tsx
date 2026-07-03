@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { Minus, Plus, Receipt, ShoppingCart, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { useCart } from "../context/cart-context"
 
 const RECEIPT_WIDTH = 32
@@ -46,7 +47,7 @@ const DIVIDER = "-".repeat(RECEIPT_WIDTH)
 
 export default function CartSidebar() {
   const router = useRouter()
-  const { cart, removeFromCart, updateQuantity, cartTotal, itemCount } = useCart()
+  const { cart, removeFromCart, updateQuantity, cartTotal, itemCount, cartFlash } = useCart()
 
   const handleCheckout = () => {
     router.push("/checkout")
@@ -75,7 +76,12 @@ export default function CartSidebar() {
   receiptLines.push("Thank you for shopping!".padStart(Math.floor((RECEIPT_WIDTH + 23) / 2)))
 
   return (
-    <div className="flex w-80 flex-col border-l bg-background">
+    <div
+      className={cn(
+        "flex w-80 flex-col border-l bg-background transition-all duration-300",
+        cartFlash && "ring-4 ring-inset ring-emerald-500",
+      )}
+    >
       <div className="flex items-center justify-between border-b p-4">
         <h2 className="flex items-center text-lg font-semibold">
           <ShoppingCart className="mr-2 h-5 w-5" />

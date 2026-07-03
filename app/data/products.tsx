@@ -7,6 +7,7 @@ export const products: Product[] = [
     price: 1.99,
     image: "/lays-classic-chips.png",
     category: "snacks",
+    barcode: "028400001",
   },
   {
     id: 2,
@@ -14,6 +15,7 @@ export const products: Product[] = [
     price: 2.49,
     image: "/oreo-cookies.png",
     category: "snacks",
+    barcode: "044000002",
   },
   {
     id: 3,
@@ -21,6 +23,7 @@ export const products: Product[] = [
     price: 1.89,
     image: "/coca-cola-bottle.png",
     category: "beverages",
+    barcode: "049000003",
   },
   {
     id: 4,
@@ -28,6 +31,7 @@ export const products: Product[] = [
     price: 1.29,
     image: "/mineral-water-1l.png",
     category: "beverages",
+    barcode: "012000004",
   },
   {
     id: 5,
@@ -35,6 +39,7 @@ export const products: Product[] = [
     price: 2.99,
     image: "/red-bull-can.png",
     category: "beverages",
+    barcode: "090000005",
   },
   {
     id: 6,
@@ -42,6 +47,7 @@ export const products: Product[] = [
     price: 0.89,
     image: "/instant-noodles.png",
     category: "groceries",
+    barcode: "070000006",
   },
   {
     id: 7,
@@ -49,6 +55,7 @@ export const products: Product[] = [
     price: 2.29,
     image: "/white-bread.png",
     category: "groceries",
+    barcode: "072000007",
   },
   {
     id: 8,
@@ -56,6 +63,7 @@ export const products: Product[] = [
     price: 3.79,
     image: "/whole-milk-gallon.png",
     category: "groceries",
+    barcode: "021000008",
   },
   {
     id: 9,
@@ -63,6 +71,7 @@ export const products: Product[] = [
     price: 0.99,
     image: "/pocket-tissues.png",
     category: "household",
+    barcode: "037000009",
   },
   {
     id: 10,
@@ -70,5 +79,6 @@ export const products: Product[] = [
     price: 1.49,
     image: "/dish-soap.png",
     category: "household",
+    barcode: "035000010",
   },
 ]
