@@ -20,7 +20,8 @@ export default function ReceiptPreview({ lines }: Props) {
           )
         }
 
-        if (line.startsWith(" ") && trimmed.length > 0 && trimmed.length <= 32) {
+        const isCentredLine = line.startsWith(" ") && trimmed.length > 0 && trimmed.length <= 32 && !/^\S.*\s{2,}\S.*$/.test(line)
+        if (isCentredLine) {
           return (
             <div key={idx} className="receipt-line center">
               {trimmed}

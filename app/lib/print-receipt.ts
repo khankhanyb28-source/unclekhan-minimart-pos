@@ -44,7 +44,8 @@ export async function printReceipt(receiptText: string, options?: PrintOptions) 
 
     const trimmed = line.trim()
 
-    if (trimmed.length <= 32 && line.startsWith(" ")) {
+    const isCentredLine = line.startsWith(" ") && trimmed.length > 0 && trimmed.length <= 32 && !/^\S.*\s{2,}\S.*$/.test(line)
+    if (isCentredLine) {
       el.classList.add("center")
       el.textContent = trimmed
     } else {
