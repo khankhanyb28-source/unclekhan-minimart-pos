@@ -272,10 +272,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      setProducts((prev) =>
-        prev.map((product) => (product.id === productId ? { ...product, ...changes } : product)),
-      )
-      return products.find((product) => product.id === productId) ?? null
+      // Fallback: update local state. Find the existing product first.
+      const existing = products.find((p) => p.id === productId)
+      if (!existing) {
+        // Keep behaviour strict: throw when product can't be found so callers receive a rejected promise
+        // instead of a nullable value. This keeps the `Promise<Product>` contract.
+        throw new Error(`Product with id ${productId} not found`)
+      }
+
+      const merged: Product = { ...existing, ...changes }
+      setProducts((prev) => prev.map((product) => (product.id === productId ? merged : product)))
+      return merged
     },
     [products],
   )

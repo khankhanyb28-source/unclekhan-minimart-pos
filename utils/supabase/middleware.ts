@@ -18,19 +18,22 @@ export const createClient = (request: NextRequest) => {
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
       getAll() {
-        return request.cookies.getAll().map((cookie) => ({
-          name: cookie.name,
-          value: cookie.value,
-          options: {
-            path: cookie.path,
-            domain: cookie.domain,
-            expires: cookie.expires,
-            httpOnly: cookie.httpOnly,
-            maxAge: cookie.maxAge,
-            sameSite: cookie.sameSite,
-            secure: cookie.secure,
-          },
-        }))
+        return request.cookies.getAll().map((cookie) => {
+          const c: any = cookie
+          return {
+            name: c.name,
+            value: c.value,
+            options: {
+              path: c.path,
+              domain: c.domain,
+              expires: c.expires,
+              httpOnly: c.httpOnly,
+              maxAge: c.maxAge,
+              sameSite: c.sameSite,
+              secure: c.secure,
+            },
+          }
+        })
       },
       setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value, options }) => {
