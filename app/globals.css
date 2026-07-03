@@ -141,12 +141,14 @@
   .print-receipt pre,
   .thermal-receipt pre {
     margin: 0;
-    padding: 0.8mm 0.6mm;
+    padding: 1mm 0.8mm;
     font-family: "Courier New", Courier, monospace;
-    font-size: 8pt;
-    line-height: 1.16;
+    font-size: 9pt;
+    line-height: 1.25;
     white-space: pre;
     color: black;
+    letter-spacing: 0.01em;
+    font-weight: 600;
     box-sizing: border-box;
   }
 
@@ -156,15 +158,16 @@
     justify-content: space-between;
     align-items: center;
     font-family: "Courier New", Courier, monospace;
-    font-size: 8pt;
-    line-height: 1.16;
-    padding: 0.2mm 0.6mm;
+    font-size: 9pt;
+    line-height: 1.25;
+    padding: 0.3mm 0.8mm;
     color: black;
     word-break: break-word;
     width: 100%;
     box-sizing: border-box;
     min-width: 0;
     overflow: hidden;
+    font-weight: 600;
   }
 
   .thermal-receipt .receipt-line.center {
@@ -179,21 +182,23 @@
   }
 
   .thermal-receipt .receipt-line .left {
-    flex: 1 1 60%;
+    flex: 1 1 58%;
     min-width: 0;
     text-align: left;
     overflow-wrap: anywhere;
+    font-weight: 600;
   }
 
   .thermal-receipt .receipt-line .right {
-    flex: 0 0 36%;
-    max-width: 36%;
+    flex: 0 0 38%;
+    max-width: 38%;
     min-width: 0;
     text-align: right;
-    margin-left: 3px;
+    margin-left: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: 600;
   }
 
   .thermal-receipt .receipt-line.total {
@@ -210,6 +215,18 @@
   @page {
     size: 80mm auto;
     margin: 3mm;
+  }
+
+  .print-receipt pre,
+  .thermal-receipt .receipt-line {
+    font-size: 10pt;
+    line-height: 1.28;
+    padding: 0.35mm 0.9mm;
+  }
+
+  .thermal-receipt .receipt-line .right {
+    max-width: 40%;
+    flex: 0 0 40%;
   }
 
   html,
