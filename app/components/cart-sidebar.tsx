@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { useCart } from "../context/cart-context"
 import { buildReceiptLines } from "../lib/receipt"
 import { printReceipt } from "../lib/print-receipt"
+import ReceiptPreview from "./receipt-preview"
 
 export default function CartSidebar() {
   const { cart, removeFromCart, updateQuantity, cartTotal, itemCount, cartFlash, openCheckout, clearCart } = useCart()
@@ -128,20 +129,9 @@ export default function CartSidebar() {
             <Receipt className="h-3.5 w-3.5" />
             Receipt Preview (58mm / 32 chars)
           </div>
-          <pre className="max-h-48 overflow-auto whitespace-pre rounded-md border border-dashed bg-muted p-3 font-mono text-[11px] leading-tight text-foreground">
-            {receiptText}
-          </pre>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="mt-2 w-full"
-            disabled={cart.length === 0}
-            onClick={handlePrintPreview}
-          >
-            <Receipt className="mr-2 h-3.5 w-3.5" />
-            Print Receipt
-          </Button>
+          <div className="max-h-48 overflow-auto rounded-md border border-dashed bg-muted p-3 text-foreground">
+            <ReceiptPreview lines={receiptLines} />
+          </div>
         </div>
       </div>
     </div>

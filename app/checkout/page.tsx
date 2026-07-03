@@ -35,7 +35,7 @@ export default function CheckoutPage() {
       receiptNumber,
       timestamp,
     }).join("\n")
-    printReceipt(receiptText)
+    printReceipt(receiptText, { suppressFallbackToast: true })
     router.push("/success")
   }
 

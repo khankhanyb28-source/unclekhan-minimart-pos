@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useCart } from "../context/cart-context"
 import { buildReceiptLines } from "../lib/receipt"
 import { printReceipt } from "../lib/print-receipt"
+import ReceiptPreview from "../components/receipt-preview"
 import { clearTransaction, loadTransaction, type CompletedTransaction } from "../lib/transaction"
 
 export default function SuccessPage() {
@@ -28,7 +29,7 @@ export default function SuccessPage() {
     }
   }, [displayItems.length, router])
 
-  const receiptText = useMemo(
+  const receiptLines = useMemo(
     () =>
       buildReceiptLines(displayItems, displayTotal, {
         paymentLabel: transaction?.paymentLabel,
@@ -36,9 +37,11 @@ export default function SuccessPage() {
         changeDue: transaction?.changeDue,
         receiptNumber: transaction?.receiptNumber,
         timestamp: transaction?.timestamp ?? new Date().toLocaleString(),
-      }).join("\n"),
+      }),
     [displayItems, displayTotal, transaction],
   )
+
+  const receiptText = receiptLines.join("\n")
 
   const handleBackToPOS = () => {
     clearCart()
@@ -47,7 +50,7 @@ export default function SuccessPage() {
   }
 
   const handlePrint = () => {
-    printReceipt(receiptText)
+    printReceipt(receiptText, { suppressFallbackToast: true })
   }
 
   if (displayItems.length === 0) {
@@ -66,13 +69,11 @@ export default function SuccessPage() {
         <h1 className="mb-2 text-center text-2xl font-bold">Payment Successful</h1>
         <p className="mb-6 text-center text-muted-foreground">Thank you for your purchase!</p>
 
-        <pre className="whitespace-pre font-mono text-[11px] leading-tight text-slate-800">{receiptText}</pre>
+        <div className="whitespace-pre font-mono text-[11px] leading-tight text-slate-800">
+          <ReceiptPreview lines={receiptLines} />
+        </div>
 
         <div className="mt-6 flex flex-col gap-3 print:hidden">
-          <Button onClick={handlePrint} variant="outline" className="w-full">
-            <Printer className="mr-2 h-4 w-4" />
-            Print Receipt
-          </Button>
           <Button onClick={handleBackToPOS} className="w-full">
             Go Back to POS
           </Button>

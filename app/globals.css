@@ -147,6 +147,45 @@
     color: black;
   }
 
+  /* Structured receipt lines for better alignment */
+  .thermal-receipt .receipt-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9pt;
+    line-height: 1.2;
+    padding: 0.5mm 2mm;
+    color: black;
+    word-break: break-word;
+  }
+
+  .thermal-receipt .receipt-line.center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .thermal-receipt .receipt-line.divider {
+    border-top: 1px dashed #000;
+    padding: 1mm 2mm;
+  }
+
+  .thermal-receipt .receipt-line .left {
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  .thermal-receipt .receipt-line .right {
+    flex: 0 0 auto;
+    text-align: right;
+    margin-left: 6px;
+  }
+
+  .thermal-receipt .receipt-line.total {
+    font-weight: 700;
+    font-size: 10pt;
+  }
+
   .print-hidden {
     display: none !important;
   }
@@ -172,4 +211,47 @@
   .thermal-receipt pre {
     font-size: 10pt;
   }
+}
+
+/* Screen preview styles for receipt preview (non-print) */
+.receipt-preview {
+  background: transparent;
+}
+
+.receipt-preview .receipt-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 2px 6px;
+  color: inherit;
+  word-break: break-word;
+}
+
+.receipt-preview .receipt-line.center {
+  justify-content: center;
+  text-align: center;
+}
+
+.receipt-preview .receipt-line.divider {
+  border-top: 1px dashed rgba(0,0,0,0.12);
+  padding: 6px 0;
+}
+
+.receipt-preview .receipt-line .left {
+  flex: 1 1 auto;
+  text-align: left;
+}
+
+.receipt-preview .receipt-line .right {
+  flex: 0 0 auto;
+  text-align: right;
+  margin-left: 6px;
+}
+
+.receipt-preview .receipt-line.total {
+  font-weight: 700;
+  font-size: 13px;
 }

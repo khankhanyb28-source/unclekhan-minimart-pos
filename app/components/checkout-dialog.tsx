@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils"
 import { useCart } from "../context/cart-context"
 import { buildReceiptLines } from "../lib/receipt"
 import { printReceipt } from "../lib/print-receipt"
+import ReceiptPreview from "./receipt-preview"
 import { createReceiptNumber, saveTransaction } from "../lib/transaction"
 
 const QUICK_CASH = [20, 50, 100, 200, 500, 1000]
@@ -75,7 +76,7 @@ export default function CheckoutDialog() {
       receiptNumber,
       timestamp,
     })
-    printReceipt(receiptText)
+    printReceipt(receiptText, { suppressFallbackToast: true })
     const changeMsg = isCash && changeDue > 0 ? ` Change due: ₱${changeDue.toFixed(2)}.` : ""
     toast.success("Transaction complete", {
       description: `Receipt sent to printer via ${paymentLabel}.${changeMsg}`,
@@ -204,25 +205,24 @@ export default function CheckoutDialog() {
               <ReceiptIcon className="h-4 w-4" />
               Receipt Preview (58mm / 32 chars)
             </div>
-            <pre className="flex-1 overflow-auto whitespace-pre rounded-md border border-dashed border-slate-300 bg-white p-4 font-mono text-[11px] leading-tight text-slate-800 print-hidden">
-              {receiptText}
-            </pre>
+            <div className="flex-1 overflow-auto rounded-md border border-dashed border-slate-300 bg-white p-4 text-slate-800 print-hidden">
+              <ReceiptPreview lines={buildReceiptLines(cart, cartTotal, {
+                paymentLabel,
+                cashReceived: isCash ? received : undefined,
+                changeDue: changeDue >= 0 ? changeDue : undefined,
+                receiptNumber,
+                timestamp: new Date().toLocaleString(),
+              })} />
+            </div>
             <div className="mt-4 flex flex-col gap-2 print-hidden">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                disabled={cart.length === 0}
-                onClick={handlePrintOnly}
-              >
-                <ReceiptIcon className="mr-2 h-4 w-4" />
-                Print Receipt
-              </Button>
               <Button
                 className="w-full bg-blue-600 text-white hover:bg-blue-700"
                 size="lg"
                 disabled={!canConfirm}
-                onClick={handleConfirm}
+                onClick={() => {
+                  // suppress fallback toast because printing is part of the confirmed flow
+                  handleConfirm()
+                }}
               >
                 <CheckCircle2 className="mr-2 h-4 w-4" />
                 Confirm &amp; Complete
