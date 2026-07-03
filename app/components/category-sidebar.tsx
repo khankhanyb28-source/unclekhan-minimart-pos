@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { Coffee, IceCream, LayoutGrid, Utensils } from "lucide-react"
+import { Cookie, CupSoda, LayoutGrid, ShoppingBasket, SprayCan } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -24,19 +24,24 @@ const categories: CategoryItem[] = [
     icon: LayoutGrid,
   },
   {
-    id: "food",
-    name: "Food",
-    icon: Utensils,
+    id: "snacks",
+    name: "Snacks & Chips",
+    icon: Cookie,
   },
   {
-    id: "drinks",
-    name: "Drinks",
-    icon: Coffee,
+    id: "beverages",
+    name: "Beverages",
+    icon: CupSoda,
   },
   {
-    id: "desserts",
-    name: "Desserts",
-    icon: IceCream,
+    id: "groceries",
+    name: "Groceries",
+    icon: ShoppingBasket,
+  },
+  {
+    id: "household",
+    name: "Household & Toiletries",
+    icon: SprayCan,
   },
 ]
 

@@ -7,8 +7,8 @@ import { CartProvider } from "./context/cart-context"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "POS System",
-  description: "Point of Sale System",
+  title: "Uncle Khan's Minimart POS",
+  description: "Point of Sale System for Uncle Khan's Minimart",
     generator: 'v0.app'
 }
 

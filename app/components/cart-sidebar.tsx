@@ -1,10 +1,48 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react"
+import { Minus, Plus, Receipt, ShoppingCart, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { useCart } from "../context/cart-context"
+
+const RECEIPT_WIDTH = 32
+
+// Wrap text to a max character width (auto-wrapping for 58mm printers)
+function wrapText(text: string, width = RECEIPT_WIDTH): string[] {
+  const words = text.split(" ")
+  const lines: string[] = []
+  let current = ""
+
+  for (const word of words) {
+    if ((current + (current ? " " : "") + word).length > width) {
+      if (current) lines.push(current)
+      // Break very long single words
+      if (word.length > width) {
+        let remaining = word
+        while (remaining.length > width) {
+          lines.push(remaining.slice(0, width))
+          remaining = remaining.slice(width)
+        }
+        current = remaining
+      } else {
+        current = word
+      }
+    } else {
+      current += (current ? " " : "") + word
+    }
+  }
+  if (current) lines.push(current)
+  return lines
+}
+
+// Place a label on the left and value on the right within the fixed width
+function padLine(left: string, right: string, width = RECEIPT_WIDTH): string {
+  const space = Math.max(1, width - left.length - right.length)
+  return left + " ".repeat(space) + right
+}
+
+const DIVIDER = "-".repeat(RECEIPT_WIDTH)
 
 export default function CartSidebar() {
   const router = useRouter()
@@ -13,6 +51,28 @@ export default function CartSidebar() {
   const handleCheckout = () => {
     router.push("/checkout")
   }
+
+  const receiptLines: string[] = []
+  receiptLines.push("UNCLE KHAN'S MINIMART".padStart(Math.floor((RECEIPT_WIDTH + 21) / 2)))
+  receiptLines.push(DIVIDER)
+  if (cart.length === 0) {
+    receiptLines.push("No items in cart")
+  } else {
+    for (const item of cart) {
+      // Product name, auto-wrapped
+      for (const line of wrapText(item.name)) {
+        receiptLines.push(line)
+      }
+      // Quantity x unit price ....... line total
+      const qtyLabel = `  ${item.quantity} x $${item.price.toFixed(2)}`
+      const lineTotal = `$${(item.price * item.quantity).toFixed(2)}`
+      receiptLines.push(padLine(qtyLabel, lineTotal))
+    }
+  }
+  receiptLines.push(DIVIDER)
+  receiptLines.push(padLine("TOTAL", `$${cartTotal.toFixed(2)}`))
+  receiptLines.push(DIVIDER)
+  receiptLines.push("Thank you for shopping!".padStart(Math.floor((RECEIPT_WIDTH + 23) / 2)))
 
   return (
     <div className="flex w-80 flex-col border-l bg-background">
@@ -96,6 +156,16 @@ export default function CartSidebar() {
         <Button className="w-full" size="lg" disabled={cart.length === 0} onClick={handleCheckout}>
           Checkout
         </Button>
+
+        <div className="mt-4">
+          <div className="mb-2 flex items-center gap-2 text-xs font-medium text-muted-foreground">
+            <Receipt className="h-3.5 w-3.5" />
+            Receipt Preview (58mm / 32 chars)
+          </div>
+          <pre className="max-h-48 overflow-auto whitespace-pre rounded-md border border-dashed bg-muted p-3 font-mono text-[11px] leading-tight text-foreground">
+            {receiptLines.join("\n")}
+          </pre>
+        </div>
       </div>
     </div>
   )
