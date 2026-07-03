@@ -9,17 +9,33 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useCart } from "../context/cart-context"
+import { buildReceiptLines } from "../lib/receipt"
+import { printReceipt } from "../lib/print-receipt"
+import { createReceiptNumber, saveTransaction } from "../lib/transaction"
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const { cart, cartTotal, clearCart } = useCart()
+  const { cart, cartTotal } = useCart()
   const [paymentMethod, setPaymentMethod] = useState("card")
 
-  const tax = cartTotal * 0.1
-  const grandTotal = cartTotal + tax
+  const paymentLabel = paymentMethod === "cash" ? "Cash" : "Credit/Debit Card"
 
   const handlePayment = () => {
-    // In a real app, you would process payment here
+    const receiptNumber = createReceiptNumber()
+    const timestamp = new Date().toLocaleString()
+    saveTransaction({
+      items: cart,
+      total: cartTotal,
+      paymentLabel,
+      receiptNumber,
+      timestamp,
+    })
+    const receiptText = buildReceiptLines(cart, cartTotal, {
+      paymentLabel,
+      receiptNumber,
+      timestamp,
+    }).join("\n")
+    printReceipt(receiptText)
     router.push("/success")
   }
 
@@ -69,13 +85,9 @@ export default function CheckoutPage() {
                 <p>Subtotal</p>
                 <p>₱{cartTotal.toFixed(2)}</p>
               </div>
-              <div className="flex justify-between">
-                <p>Tax (10%)</p>
-                <p>₱{tax.toFixed(2)}</p>
-              </div>
               <div className="flex justify-between font-bold">
                 <p>Total</p>
-                <p>₱{grandTotal.toFixed(2)}</p>
+                <p>₱{cartTotal.toFixed(2)}</p>
               </div>
             </div>
           </div>

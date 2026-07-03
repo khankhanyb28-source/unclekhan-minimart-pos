@@ -6,15 +6,22 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useCart } from "../context/cart-context"
 import { buildReceiptLines } from "../lib/receipt"
+import { printReceipt } from "../lib/print-receipt"
 
 export default function CartSidebar() {
-  const { cart, removeFromCart, updateQuantity, cartTotal, itemCount, cartFlash, openCheckout } = useCart()
+  const { cart, removeFromCart, updateQuantity, cartTotal, itemCount, cartFlash, openCheckout, clearCart } = useCart()
 
   const handleCheckout = () => {
     openCheckout()
   }
 
   const receiptLines = buildReceiptLines(cart, cartTotal)
+  const receiptText = receiptLines.join("\n")
+
+  const handlePrintPreview = () => {
+    if (cart.length === 0) return
+    printReceipt(receiptText)
+  }
 
   return (
     <div
@@ -28,9 +35,21 @@ export default function CartSidebar() {
           <ShoppingCart className="mr-2 h-5 w-5" />
           Cart
         </h2>
-        <span className="rounded-full bg-blue-500 px-2 py-1 text-xs font-medium text-white">
-          {itemCount} items
-        </span>
+        <div className="flex items-center gap-2">
+          {cart.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 text-xs text-white hover:bg-blue-500 hover:text-white"
+              onClick={clearCart}
+            >
+              Clear
+            </Button>
+          )}
+          <span className="rounded-full bg-blue-500 px-2 py-1 text-xs font-medium text-white">
+            {itemCount} items
+          </span>
+        </div>
       </div>
 
       <div className="flex-1 overflow-auto p-4">
@@ -110,8 +129,19 @@ export default function CartSidebar() {
             Receipt Preview (58mm / 32 chars)
           </div>
           <pre className="max-h-48 overflow-auto whitespace-pre rounded-md border border-dashed bg-muted p-3 font-mono text-[11px] leading-tight text-foreground">
-            {receiptLines.join("\n")}
+            {receiptText}
           </pre>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="mt-2 w-full"
+            disabled={cart.length === 0}
+            onClick={handlePrintPreview}
+          >
+            <Receipt className="mr-2 h-3.5 w-3.5" />
+            Print Receipt
+          </Button>
         </div>
       </div>
     </div>

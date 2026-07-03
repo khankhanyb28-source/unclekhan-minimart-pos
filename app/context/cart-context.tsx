@@ -69,6 +69,22 @@ const defaultCategories: Category[] = [
 
 const CartContext = createContext<POSContextType | undefined>(undefined)
 
+function readStorage<T>(key: string): T | null {
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? (JSON.parse(raw) as T) : null
+  } catch {
+    return null
+  }
+}
+
+function isEditableTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false
+  const tag = target.tagName
+  if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true
+  return target.isContentEditable
+}
+
 function slugify(name: string) {
   return name
     .toLowerCase()
@@ -81,6 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([])
   const [products, setProducts] = useState<Product[]>(seedProducts)
   const [categories, setCategories] = useState<Category[]>(defaultCategories)
+  const [storageReady, setStorageReady] = useState(false)
   const [cartFlash, setCartFlash] = useState(false)
   const [addProductOpen, setAddProductOpen] = useState(false)
   const [prefilledBarcode, setPrefilledBarcode] = useState("")
@@ -92,56 +109,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
     productsRef.current = products
   }, [products])
 
-  // Load cart from localStorage on initial render
+  // Hydrate from localStorage once on mount (avoids SSR mismatch + empty overwrite)
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart")
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart))
-      } catch (error) {
-        console.error("Failed to parse cart from localStorage:", error)
-      }
-    }
+    const savedCart = readStorage<CartItem[]>("cart")
+    if (savedCart) setCart(savedCart)
+
+    const savedProducts = readStorage<Product[]>("products")
+    if (savedProducts?.length) setProducts(savedProducts)
+
+    const savedCategories = readStorage<Category[]>("categories")
+    if (savedCategories?.length) setCategories(savedCategories)
+
+    setStorageReady(true)
   }, [])
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
+    if (!storageReady) return
     localStorage.setItem("cart", JSON.stringify(cart))
-  }, [cart])
+  }, [cart, storageReady])
 
-  // Load products from localStorage on initial render
   useEffect(() => {
-    const savedProducts = localStorage.getItem("products")
-    if (savedProducts) {
-      try {
-        setProducts(JSON.parse(savedProducts))
-      } catch (error) {
-        console.error("Failed to parse products from localStorage:", error)
-      }
-    }
-  }, [])
-
-  // Save products to localStorage whenever it changes
-  useEffect(() => {
+    if (!storageReady) return
     localStorage.setItem("products", JSON.stringify(products))
-  }, [products])
+  }, [products, storageReady])
 
-  // Load categories from localStorage on initial render
   useEffect(() => {
-    const savedCategories = localStorage.getItem("categories")
-    if (savedCategories) {
-      try {
-        setCategories(JSON.parse(savedCategories))
-      } catch (error) {
-        console.error("Failed to parse categories from localStorage:", error)
-      }
-    }
-  }, [])
-
-  // Save categories to localStorage whenever it changes
-  useEffect(() => {
+    if (!storageReady) return
     localStorage.setItem("categories", JSON.stringify(categories))
-  }, [categories])
+  }, [categories, storageReady])
 
   const addToCart = useCallback((product: Product) => {
     setCart((prevCart) => {
@@ -257,6 +252,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     let lastTime = 0
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Let manual typing in form fields behave normally
+      if (isEditableTarget(e.target)) return
+
       const now = Date.now()
       // Hardware scanners type very fast; a slow gap means human typing -> reset buffer
       if (now - lastTime > 80) {

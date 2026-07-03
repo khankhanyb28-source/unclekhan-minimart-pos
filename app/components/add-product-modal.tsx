@@ -73,7 +73,7 @@ export default function AddProductModal() {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="product-price">Price ($)</Label>
+            <Label htmlFor="product-price">Price (₱)</Label>
             <Input
               id="product-price"
               type="number"

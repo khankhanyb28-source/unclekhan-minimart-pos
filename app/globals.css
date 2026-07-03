@@ -96,3 +96,80 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Thermal receipt printing — 58mm default, scales for 80mm */
+@media print {
+  @page {
+    size: 58mm auto;
+    margin: 2mm;
+  }
+
+  html,
+  body {
+    width: 58mm;
+    margin: 0;
+    padding: 0;
+    background: white !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-receipt,
+  .print-receipt *,
+  .thermal-receipt,
+  .thermal-receipt * {
+    visibility: visible;
+  }
+
+  .print-receipt,
+  .thermal-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 58mm;
+    padding: 0;
+    margin: 0;
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+  }
+
+  .print-receipt pre,
+  .thermal-receipt pre {
+    margin: 0;
+    padding: 2mm;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9pt;
+    line-height: 1.25;
+    white-space: pre;
+    color: black;
+  }
+
+  .print-hidden {
+    display: none !important;
+  }
+}
+
+@media print and (min-width: 72mm) {
+  @page {
+    size: 80mm auto;
+    margin: 3mm;
+  }
+
+  html,
+  body {
+    width: 80mm;
+  }
+
+  .print-receipt,
+  .thermal-receipt {
+    width: 80mm;
+  }
+
+  .print-receipt pre,
+  .thermal-receipt pre {
+    font-size: 10pt;
+  }
+}
