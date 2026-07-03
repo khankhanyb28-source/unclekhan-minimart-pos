@@ -100,12 +100,12 @@
 @media print {
   @page {
     size: 58mm auto;
-    margin: 1mm;
+    margin: 2mm;
   }
 
   html,
   body {
-    width: 56mm;
+    width: 54mm;
     margin: 0;
     padding: 0;
     background: white !important;
@@ -127,23 +127,26 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 56mm;
+    width: 54mm;
     padding: 0;
     margin: 0;
     border: none !important;
     box-shadow: none !important;
     background: white !important;
+    box-sizing: border-box;
+    max-width: 54mm;
   }
 
   .print-receipt pre,
   .thermal-receipt pre {
     margin: 0;
-    padding: 1.5mm;
+    padding: 1.2mm;
     font-family: "Courier New", Courier, monospace;
-    font-size: 8.5pt;
-    line-height: 1.25;
+    font-size: 8.8pt;
+    line-height: 1.2;
     white-space: pre;
     color: black;
+    box-sizing: border-box;
   }
 
   /* Structured receipt lines for better alignment */
@@ -152,9 +155,9 @@
     justify-content: space-between;
     align-items: center;
     font-family: "Courier New", Courier, monospace;
-    font-size: 8.5pt;
-    line-height: 1.15;
-    padding: 0.35mm 1.5mm;
+    font-size: 8.8pt;
+    line-height: 1.2;
+    padding: 0.25mm 0.8mm;
     color: black;
     word-break: break-word;
     width: 100%;
