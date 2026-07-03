@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { Edit3, PlusCircle } from "lucide-react"
+import { Edit3, PlusCircle, Trash2 } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { useCart } from "../context/cart-context"
@@ -12,7 +12,7 @@ interface ProductGridProps {
 }
 
 export default function ProductGrid({ category, searchQuery }: ProductGridProps) {
-  const { addToCart, products, isEditMode, openEditProduct } = useCart()
+  const { addToCart, products, isEditMode, openEditProduct, deleteProduct } = useCart()
 
   const filteredProducts = products.filter((product) => {
     const matchesCategory = category === "all" || product.category === category
@@ -36,16 +36,28 @@ export default function ProductGrid({ category, searchQuery }: ProductGridProps)
           </div>
 
           {isEditMode && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                openEditProduct(product)
-              }}
-              className="absolute right-3 top-3 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900/80 text-white shadow-lg transition hover:bg-slate-800"
-            >
-              <Edit3 className="h-4 w-4" />
-            </button>
+            <div className="absolute right-3 top-3 z-20 flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  openEditProduct(product)
+                }}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900/80 text-white shadow-lg transition hover:bg-slate-800"
+              >
+                <Edit3 className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  deleteProduct(product.id)
+                }}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-amber-400 text-slate-900 shadow-lg transition hover:bg-amber-300"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
           )}
 
           <CardContent className="p-3 bg-white">

@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { toast } from "sonner"
 
 import { products as seedProducts } from "../data/products"
-import { createProduct as createProductDb, createCategory as createCategoryDb, fetchCategories, fetchProducts, updateProduct as updateProductDb } from "../lib/db"
+import { createProduct as createProductDb, createCategory as createCategoryDb, deleteProduct as deleteProductDb, fetchCategories, fetchProducts, updateProduct as updateProductDb } from "../lib/db"
 import { isSupabaseConfigured } from "../lib/supabase-client"
 
 export interface Product {
@@ -45,6 +45,7 @@ interface POSContextType {
   products: Product[]
   addProduct: (input: NewProductInput) => Promise<Product>
   updateProduct: (productId: number, changes: Partial<Omit<Product, "id">>) => Promise<Product>
+  deleteProduct: (productId: number) => Promise<void>
   // Categories
   categories: Category[]
   addCategory: (name: string) => Promise<Category | undefined>
@@ -272,11 +273,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // Fallback: update local state. Find the existing product first.
       const existing = products.find((p) => p.id === productId)
       if (!existing) {
-        // Keep behaviour strict: throw when product can't be found so callers receive a rejected promise
-        // instead of a nullable value. This keeps the `Promise<Product>` contract.
         throw new Error(`Product with id ${productId} not found`)
       }
 
@@ -285,6 +283,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return merged
     },
     [products],
+  )
+
+  const deleteProduct = useCallback(
+    async (productId: number) => {
+      if (isSupabaseConfigured()) {
+        try {
+          await deleteProductDb(productId)
+        } catch (error) {
+          console.error("Failed to delete product in Supabase:", error)
+        }
+      }
+
+      setProducts((prev) => prev.filter((product) => product.id !== productId))
+      setCart((prev) => prev.filter((item) => item.id !== productId))
+    },
+    [],
   )
 
   const addCategory = useCallback(async (name: string) => {
@@ -445,6 +459,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         editProductOpen,
         openEditProduct,
         closeEditProduct,
+        deleteProduct,
         checkoutOpen,
         openCheckout,
         closeCheckout,

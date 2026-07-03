@@ -38,3 +38,9 @@ export async function updateProduct(productId: number, changes: Partial<Omit<Pro
   if (error) throw error
   return data as Product
 }
+
+export async function deleteProduct(productId: number) {
+  const { error } = await supabaseClient.from("products").delete().eq("id", productId)
+  if (error) throw error
+  return true
+}

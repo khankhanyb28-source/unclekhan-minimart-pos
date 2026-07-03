@@ -1,15 +1,22 @@
 {
-  "name": "Uncle Khan's POS",
+  "name": "Uncle Khan's Minimart POS",
   "short_name": "Uncle Khan's POS",
   "description": "Point of Sale System for Uncle Khan's Minimart",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "landscape",
-  "background_color": "#f8fafc",
-  "theme_color": "#2563eb",
+  "background_color": "#ffe585",
+  "theme_color": "#ffcb00",
   "icons": [
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "/icons/icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
@@ -20,5 +27,7 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "categories": ["business", "utilities"],
+  "lang": "en-US"
 }

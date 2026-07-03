@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useCart } from "../context/cart-context"
 import { buildReceiptLines } from "../lib/receipt"
-import { printReceipt } from "../lib/print-receipt"
 import ReceiptPreview from "./receipt-preview"
 
 export default function CartSidebar() {
@@ -17,12 +16,6 @@ export default function CartSidebar() {
   }
 
   const receiptLines = buildReceiptLines(cart, cartTotal)
-  const receiptText = receiptLines.join("\n")
-
-  const handlePrintPreview = () => {
-    if (cart.length === 0) return
-    printReceipt(receiptText)
-  }
 
   return (
     <div

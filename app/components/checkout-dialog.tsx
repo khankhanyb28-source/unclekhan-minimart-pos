@@ -88,11 +88,6 @@ export default function CheckoutDialog() {
     router.push("/success")
   }
 
-  const handlePrintOnly = () => {
-    if (cart.length === 0) return
-    printReceipt(receiptText)
-  }
-
   return (
     <Dialog open={checkoutOpen} onOpenChange={(open) => (open ? null : closeCheckout())}>
       <DialogContent className="max-w-4xl gap-0 overflow-hidden p-0">
