@@ -9,6 +9,7 @@ import ProductGrid from "./components/product-grid"
 import CartSidebar from "./components/cart-sidebar"
 import CategorySidebar from "./components/category-sidebar"
 import AddProductModal from "./components/add-product-modal"
+import CheckoutDialog from "./components/checkout-dialog"
 import { useCart } from "./context/cart-context"
 
 export default function POSPage() {
@@ -67,6 +68,7 @@ export default function POSPage() {
       <CartSidebar />
 
       <AddProductModal />
+      <CheckoutDialog />
     </div>
   )
 }

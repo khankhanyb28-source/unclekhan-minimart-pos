@@ -53,6 +53,10 @@ interface POSContextType {
   prefilledBarcode: string
   openAddProduct: (barcode?: string) => void
   closeAddProduct: () => void
+  // Checkout dialog
+  checkoutOpen: boolean
+  openCheckout: () => void
+  closeCheckout: () => void
 }
 
 const defaultCategories: Category[] = [
@@ -80,6 +84,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cartFlash, setCartFlash] = useState(false)
   const [addProductOpen, setAddProductOpen] = useState(false)
   const [prefilledBarcode, setPrefilledBarcode] = useState("")
+  const [checkoutOpen, setCheckoutOpen] = useState(false)
 
   // Keep a ref of products so the global scanner handler always reads the latest inventory
   const productsRef = useRef(products)
@@ -145,6 +150,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setAddProductOpen(false)
     setPrefilledBarcode("")
   }, [])
+
+  const openCheckout = useCallback(() => setCheckoutOpen(true), [])
+  const closeCheckout = useCallback(() => setCheckoutOpen(false), [])
 
   const addProduct = useCallback(
     (input: NewProductInput) => {
@@ -265,6 +273,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         prefilledBarcode,
         openAddProduct,
         closeAddProduct,
+        checkoutOpen,
+        openCheckout,
+        closeCheckout,
       }}
     >
       {children}
