@@ -14,6 +14,7 @@ export interface Product {
   image: string
   category: string
   barcode?: string
+  stock?: number
 }
 
 export interface Category {
@@ -25,11 +26,22 @@ interface CartItem extends Product {
   quantity: number
 }
 
+export interface ImportedProductRow {
+  id?: number
+  name?: string
+  price?: number
+  category?: string
+  image?: string
+  barcode?: string
+  stock?: number
+}
+
 interface NewProductInput {
   name: string
   price: number
   category: string
   barcode: string
+  stock: number
 }
 
 interface POSContextType {
@@ -46,6 +58,7 @@ interface POSContextType {
   addProduct: (input: NewProductInput) => Promise<Product>
   updateProduct: (productId: number, changes: Partial<Omit<Product, "id">>) => Promise<Product>
   deleteProduct: (productId: number) => Promise<void>
+  importProducts: (items: ImportedProductRow[]) => Promise<void>
   // Categories
   categories: Category[]
   addCategory: (name: string) => Promise<Category | undefined>
@@ -238,6 +251,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         price: input.price,
         category: input.category,
         barcode: input.barcode.trim() || undefined,
+        stock: Number.isFinite(input.stock) ? input.stock : 0,
         image: `/placeholder.svg?height=300&width=300&query=${encodeURIComponent(input.name)}`,
       }
 
@@ -300,6 +314,50 @@ export function CartProvider({ children }: { children: ReactNode }) {
     },
     [],
   )
+
+  const importProducts = useCallback(async (items: ImportedProductRow[]) => {
+    setProducts((prevProducts) => {
+      const byId = new Map(prevProducts.map((product) => [product.id, product]))
+      const byBarcode = new Map(
+        prevProducts.filter((product) => product.barcode).map((product) => [product.barcode!, product]),
+      )
+
+      const mergedProducts = [...prevProducts]
+
+      for (const incoming of items) {
+        const name = incoming.name?.trim()
+        if (!name) continue
+
+        const normalizedBarcode = incoming.barcode?.trim() || undefined
+        const existing = incoming.id
+          ? byId.get(incoming.id)
+          : normalizedBarcode
+          ? byBarcode.get(normalizedBarcode)
+          : undefined
+
+        const nextProduct: Product = {
+          id: existing?.id ?? incoming.id ?? Date.now() + Math.floor(Math.random() * 1000),
+          name,
+          price: Number(incoming.price ?? 0),
+          category: incoming.category?.trim() || "uncategorized",
+          image:
+            incoming.image?.trim() ||
+            `/placeholder.svg?height=300&width=300&query=${encodeURIComponent(name)}`,
+          barcode: normalizedBarcode,
+          stock: Number(incoming.stock ?? 0),
+        }
+
+        if (existing) {
+          const index = mergedProducts.findIndex((product) => product.id === existing.id)
+          if (index >= 0) mergedProducts[index] = { ...existing, ...nextProduct }
+        } else {
+          mergedProducts.push(nextProduct)
+        }
+      }
+
+      return mergedProducts
+    })
+  }, [])
 
   const addCategory = useCallback(async (name: string) => {
     const trimmed = name.trim()
@@ -460,6 +518,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         openEditProduct,
         closeEditProduct,
         deleteProduct,
+        importProducts,
         checkoutOpen,
         openCheckout,
         closeCheckout,

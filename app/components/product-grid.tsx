@@ -65,6 +65,7 @@ export default function ProductGrid({ category, searchQuery }: ProductGridProps)
               <h3 className="font-medium line-clamp-1 text-slate-800">{product.name}</h3>
               <p className="text-sm text-slate-600">₱{product.price.toFixed(2)}</p>
               <p className="mt-1 text-xs uppercase tracking-[0.15em] text-slate-400">{product.category}</p>
+              <p className="mt-2 text-xs text-slate-500">Stock: {product.stock ?? 0}</p>
             </div>
           </CardContent>
         </Card>

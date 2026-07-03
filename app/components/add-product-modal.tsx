@@ -24,6 +24,7 @@ export default function AddProductModal() {
   const [price, setPrice] = useState("")
   const [category, setCategory] = useState("")
   const [barcode, setBarcode] = useState("")
+  const [stock, setStock] = useState("")
 
   // Selectable categories exclude the "all" pseudo-category
   const selectableCategories = categories.filter((c) => c.id !== "all")
@@ -35,6 +36,7 @@ export default function AddProductModal() {
       setPrice("")
       setCategory(selectableCategories[0]?.id ?? "")
       setBarcode(prefilledBarcode)
+      setStock("")
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addProductOpen, prefilledBarcode])
@@ -42,11 +44,18 @@ export default function AddProductModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const parsedPrice = Number.parseFloat(price)
-    if (!name.trim() || Number.isNaN(parsedPrice) || parsedPrice < 0 || !category) {
-      toast.error("Please fill in a name, valid price, and category")
+    const parsedStock = Number.parseInt(stock, 10)
+    if (!name.trim() || Number.isNaN(parsedPrice) || parsedPrice < 0 || !category || Number.isNaN(parsedStock) || parsedStock < 0) {
+      toast.error("Please fill in a name, valid price, category, and stock")
       return
     }
-    const created = await addProduct({ name: name.trim(), price: parsedPrice, category, barcode })
+    const created = await addProduct({
+      name: name.trim(),
+      price: parsedPrice,
+      category,
+      barcode,
+      stock: parsedStock,
+    })
     addToCart(created)
     toast.success(`Added ${created.name} to inventory`)
     closeAddProduct()
@@ -109,6 +118,19 @@ export default function AddProductModal() {
               onChange={(e) => setBarcode(e.target.value)}
               placeholder="Scan or type a barcode"
               className="font-mono"
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="product-stock">Stock Quantity</Label>
+            <Input
+              id="product-stock"
+              type="number"
+              min="0"
+              step="1"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              placeholder="0"
             />
           </div>
 

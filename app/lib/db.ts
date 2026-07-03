@@ -10,7 +10,7 @@ export async function fetchCategories() {
 export async function fetchProducts() {
   const { data, error } = await supabaseClient
     .from("products")
-    .select("id, name, price, category, image, barcode")
+    .select("id, name, price, category, image, barcode, stock")
     .order("name")
   if (error) throw error
   return (data ?? []) as Product[]

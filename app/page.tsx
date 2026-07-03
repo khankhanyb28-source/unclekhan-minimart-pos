@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
-import { Search, ScanBarcode, Plus } from "lucide-react"
+import { useRef, useState } from "react"
+import { Search, ScanBarcode, Plus, Download, Upload } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { createInventoryWorkbook, downloadWorkbook, parseInventoryWorkbook } from "./lib/product-excel"
 import ProductGrid from "./components/product-grid"
 import CartSidebar from "./components/cart-sidebar"
 import CategorySidebar from "./components/category-sidebar"
@@ -13,11 +14,13 @@ import EditProductModal from "./components/edit-product-modal"
 import CheckoutDialog from "./components/checkout-dialog"
 import SuperuserToggle from "./components/superuser-toggle"
 import { useCart } from "./context/cart-context"
+import { toast } from "sonner"
 
 export default function POSPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const { scannerActive, openAddProduct } = useCart()
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const { scannerActive, openAddProduct, products, importProducts } = useCart()
 
   return (
     <div className="flex h-screen bg-background">
@@ -59,6 +62,43 @@ export default function POSPage() {
                 <Plus className="mr-1 h-4 w-4" />
                 Add Product
               </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const workbook = createInventoryWorkbook(products)
+                  downloadWorkbook(workbook, "inventory-export.xlsx")
+                }}
+              >
+                <Download className="mr-1 h-4 w-4" />
+                Export Inventory
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="mr-1 h-4 w-4" />
+                Import Inventory
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".xlsx, .xls"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0]
+                  if (!file) return
+                  try {
+                    const rows = await parseInventoryWorkbook(file)
+                    await importProducts(rows)
+                    toast.success("Inventory imported and updated")
+                  } catch (error) {
+                    console.error(error)
+                    toast.error("Failed to import inventory. Please use the exported file format.")
+                  } finally {
+                    e.target.value = ""
+                  }
+                }}
+              />
             </div>
           </div>
         </div>

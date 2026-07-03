@@ -16,6 +16,7 @@ export default function EditProductModal() {
   const [category, setCategory] = useState("")
   const [image, setImage] = useState("")
   const [barcode, setBarcode] = useState("")
+  const [stock, setStock] = useState("")
 
   useEffect(() => {
     if (!editProductOpen || !editingProduct) return
@@ -24,6 +25,7 @@ export default function EditProductModal() {
     setCategory(editingProduct.category)
     setImage(editingProduct.image ?? "")
     setBarcode(editingProduct.barcode ?? "")
+    setStock(String(editingProduct.stock ?? 0))
   }, [editProductOpen, editingProduct])
 
   const selectableCategories = categories.filter((c) => c.id !== "all")
@@ -33,7 +35,8 @@ export default function EditProductModal() {
     if (!editingProduct) return
 
     const parsedPrice = Number.parseFloat(price)
-    if (!name.trim() || Number.isNaN(parsedPrice) || parsedPrice < 0 || !category) {
+    const parsedStock = Number.parseInt(stock, 10)
+    if (!name.trim() || Number.isNaN(parsedPrice) || parsedPrice < 0 || !category || Number.isNaN(parsedStock) || parsedStock < 0) {
       toast.error("Please fill in all product fields before saving")
       return
     }
@@ -44,6 +47,7 @@ export default function EditProductModal() {
       category,
       image: image.trim() || undefined,
       barcode: barcode.trim() || undefined,
+      stock: parsedStock,
     })
 
     toast.success("Product updated")
@@ -117,6 +121,19 @@ export default function EditProductModal() {
               onChange={(e) => setBarcode(e.target.value)}
               placeholder="Scan or type a barcode"
               className="font-mono"
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="edit-product-stock">Stock Quantity</Label>
+            <Input
+              id="edit-product-stock"
+              type="number"
+              min="0"
+              step="1"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              placeholder="0"
             />
           </div>
 
