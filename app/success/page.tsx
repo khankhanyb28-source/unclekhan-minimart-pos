@@ -74,6 +74,10 @@ export default function SuccessPage() {
         </div>
 
         <div className="mt-6 flex flex-col gap-3 print:hidden">
+          <Button variant="outline" onClick={handlePrint} className="w-full">
+            <Printer className="mr-2 h-4 w-4" />
+            Reprint Receipt
+          </Button>
           <Button onClick={handleBackToPOS} className="w-full">
             Go Back to POS
           </Button>

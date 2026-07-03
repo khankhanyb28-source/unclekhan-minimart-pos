@@ -10,7 +10,9 @@ export default function ReceiptPreview({ lines }: Props) {
   return (
     <div className="receipt-preview thermal-receipt">
       {lines.map((line, idx) => {
-        if (/^[-]{3,}$/.test(line.trim())) {
+        const trimmed = line.trim()
+
+        if (/^[-]{3,}$/.test(trimmed)) {
           return (
             <div key={idx} className="receipt-line divider">
               {/* empty divider */}
@@ -18,10 +20,18 @@ export default function ReceiptPreview({ lines }: Props) {
           )
         }
 
-        const match = line.match(/^(.*?)\s{2,}(.*?)$/)
+        if (line.startsWith(" ") && trimmed.length > 0 && trimmed.length <= 32) {
+          return (
+            <div key={idx} className="receipt-line center">
+              {trimmed}
+            </div>
+          )
+        }
+
+        const match = line.match(/^(\S.*?)\s{2,}(\S.*)$/)
         if (match) {
           return (
-            <div key={idx} className={`receipt-line ${/^\s*TOTAL\b|^\s*CHANGE\b|^\s*PAYMENT\b/i.test(match[1]) ? "total" : ""}`}>
+            <div key={idx} className={`receipt-line ${/^(TOTAL|CHANGE|PAYMENT)\b/i.test(match[1]) ? "total" : ""}`}>
               <span className="left">{match[1]}</span>
               <span className="right">{match[2]}</span>
             </div>
@@ -29,8 +39,8 @@ export default function ReceiptPreview({ lines }: Props) {
         }
 
         return (
-          <div key={idx} className={`receipt-line ${line.trim().length <= 32 ? "center" : ""}`}>
-            {line}
+          <div key={idx} className={`receipt-line ${trimmed.length <= 32 ? "center" : ""}`}>
+            {trimmed}
           </div>
         )
       })}

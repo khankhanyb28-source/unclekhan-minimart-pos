@@ -42,23 +42,27 @@ export async function printReceipt(receiptText: string, options?: PrintOptions) 
       continue
     }
 
-    // If the line contains two or more spaces, assume left/right columns
-    const match = line.match(/^(.*?)\s{2,}(.*?)$/)
-    if (match) {
-      const left = document.createElement("span")
-      left.className = "left"
-      left.textContent = match[1]
-      const right = document.createElement("span")
-      right.className = "right"
-      right.textContent = match[2]
-      el.appendChild(left)
-      el.appendChild(right)
-      // Mark totals for stronger emphasis
-      if (/^\s*TOTAL\b|^\s*CHANGE\b|^\s*PAYMENT\b/i.test(match[1])) el.classList.add("total")
+    const trimmed = line.trim()
+
+    if (trimmed.length <= 32 && line.startsWith(" ")) {
+      el.classList.add("center")
+      el.textContent = trimmed
     } else {
-      // Center short lines (titles) if short enough
-      if (line.trim().length <= 32) el.classList.add("center")
-      el.textContent = line
+      const match = line.match(/^(\S.*?)\s{2,}(\S.*)$/)
+      if (match) {
+        const left = document.createElement("span")
+        left.className = "left"
+        left.textContent = match[1]
+        const right = document.createElement("span")
+        right.className = "right"
+        right.textContent = match[2]
+        el.appendChild(left)
+        el.appendChild(right)
+        if (/^(TOTAL|CHANGE|PAYMENT)\b/i.test(match[1])) el.classList.add("total")
+      } else {
+        if (trimmed.length <= 32) el.classList.add("center")
+        el.textContent = trimmed
+      }
     }
 
     container.appendChild(el)

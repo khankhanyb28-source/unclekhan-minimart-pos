@@ -163,6 +163,7 @@
   .thermal-receipt .receipt-line.center {
     justify-content: center;
     text-align: center;
+    width: 100%;
   }
 
   .thermal-receipt .receipt-line.divider {
@@ -228,16 +229,7 @@
   padding: 2px 6px;
   color: inherit;
   word-break: break-word;
-}
-
-.receipt-preview .receipt-line.center {
-  justify-content: center;
-  text-align: center;
-}
-
-.receipt-preview .receipt-line.divider {
-  border-top: 1px dashed rgba(0,0,0,0.12);
-  padding: 6px 0;
+    min-height: 1.2em;
 }
 
 .receipt-preview .receipt-line .left {
