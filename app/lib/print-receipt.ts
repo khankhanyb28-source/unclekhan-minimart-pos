@@ -1,5 +1,22 @@
-/** Inject a thermal-receipt node and open the native print dialog. */
-export function printReceipt(receiptText: string) {
+import { toast } from "sonner"
+import { isLocalPrinterServiceSupported, printViaLocalService } from "./printer-service"
+
+/**
+ * Try to send the receipt directly to a local printer service.
+ * If the service is missing or returns an error, fall back to browser print.
+ */
+export async function printReceipt(receiptText: string) {
+  if (isLocalPrinterServiceSupported()) {
+    try {
+      await printViaLocalService(receiptText)
+      toast.success("Receipt sent to local printer")
+      return
+    } catch (error) {
+      console.error("Local printer service failed:", error)
+      toast.error("Local printer unavailable. Falling back to browser print.")
+    }
+  }
+
   const existing = document.getElementById("thermal-receipt-print")
   existing?.remove()
 

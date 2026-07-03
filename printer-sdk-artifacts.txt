@@ -1,0 +1,19 @@
+﻿C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\Android SDK\BlueToothDEMO\app\app.iml
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\Android SDK\USBDEMO\app\app.iml
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\Android SDK\WIFIDEMO\app\app.iml
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\Assets.xcassets\AppIcon.appiconset\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\Assets.xcassets\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\en.lproj\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\IQKeyBoardManager\Categories\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\IQKeyBoardManager\Resources\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\IQKeyBoardManager\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\IQKeybordManagerSwift\Resources\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\IQKeybordManagerSwift\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\KeyboardTextFieldDemo\IQKeyboardManager Swift\Images.xcassets\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\KeyboardTextFieldDemo\IQKeyboardManager Swift\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\KeyboardTextFieldDemo\KeyboardManager\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\KeyboardTextFieldDemo\KeyboardTextFieldDemo\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\KeyboardTextFieldDemo\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\IQKeyboardManager\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\PrinterSDK\.DS_Store
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\IOS SDK\PrinterDemo\PrinterDemo\.DS_Store

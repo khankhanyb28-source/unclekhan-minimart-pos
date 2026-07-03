@@ -10,6 +10,7 @@ import CartSidebar from "./components/cart-sidebar"
 import CategorySidebar from "./components/category-sidebar"
 import AddProductModal from "./components/add-product-modal"
 import CheckoutDialog from "./components/checkout-dialog"
+import SuperuserToggle from "./components/superuser-toggle"
 import { useCart } from "./context/cart-context"
 
 export default function POSPage() {
@@ -52,6 +53,7 @@ export default function POSPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
+              <SuperuserToggle />
               <Button onClick={() => openAddProduct()}>
                 <Plus className="mr-1 h-4 w-4" />
                 Add Product
@@ -68,6 +70,7 @@ export default function POSPage() {
       <CartSidebar />
 
       <AddProductModal />
+      <EditProductModal />
       <CheckoutDialog />
     </div>
   )

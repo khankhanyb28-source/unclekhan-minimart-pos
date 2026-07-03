@@ -4,6 +4,8 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { toast } from "sonner"
 
 import { products as seedProducts } from "../data/products"
+import { createProduct as createProductDb, createCategory as createCategoryDb, fetchCategories, fetchProducts, updateProduct as updateProductDb } from "../lib/db"
+import { isSupabaseConfigured } from "../lib/supabase-client"
 
 export interface Product {
   id: number
@@ -41,10 +43,11 @@ interface POSContextType {
   itemCount: number
   // Inventory
   products: Product[]
-  addProduct: (input: NewProductInput) => Product
+  addProduct: (input: NewProductInput) => Promise<Product>
+  updateProduct: (productId: number, changes: Partial<Omit<Product, "id">>) => Promise<Product>
   // Categories
   categories: Category[]
-  addCategory: (name: string) => void
+  addCategory: (name: string) => Promise<Category | undefined>
   // Scanner
   scannerActive: boolean
   cartFlash: boolean
@@ -53,6 +56,13 @@ interface POSContextType {
   prefilledBarcode: string
   openAddProduct: (barcode?: string) => void
   closeAddProduct: () => void
+  // Edit mode
+  isEditMode: boolean
+  toggleEditMode: () => void
+  editingProduct: Product | null
+  editProductOpen: boolean
+  openEditProduct: (product: Product) => void
+  closeEditProduct: () => void
   // Checkout dialog
   checkoutOpen: boolean
   openCheckout: () => void
@@ -101,6 +111,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cartFlash, setCartFlash] = useState(false)
   const [addProductOpen, setAddProductOpen] = useState(false)
   const [prefilledBarcode, setPrefilledBarcode] = useState("")
+  const [editProductOpen, setEditProductOpen] = useState(false)
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+  const [isEditMode, setIsEditMode] = useState(false)
   const [checkoutOpen, setCheckoutOpen] = useState(false)
 
   // Keep a ref of products so the global scanner handler always reads the latest inventory
@@ -122,6 +135,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     setStorageReady(true)
   }, [])
+
+  useEffect(() => {
+    if (!storageReady || !isSupabaseConfigured()) return
+
+    fetchProducts()
+      .then((data) => {
+        if (data.length) setProducts(data)
+      })
+      .catch((error) => {
+        console.error("Failed to load products from Supabase:", error)
+      })
+
+    fetchCategories()
+      .then((data) => {
+        if (data.length) setCategories([{ id: "all", name: "All Products" }, ...data])
+      })
+      .catch((error) => {
+        console.error("Failed to load categories from Supabase:", error)
+      })
+  }, [storageReady])
 
   useEffect(() => {
     if (!storageReady) return
@@ -180,33 +213,97 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setPrefilledBarcode("")
   }, [])
 
+  const openEditProduct = useCallback((product: Product) => {
+    setEditingProduct(product)
+    setEditProductOpen(true)
+  }, [])
+
+  const closeEditProduct = useCallback(() => {
+    setEditingProduct(null)
+    setEditProductOpen(false)
+  }, [])
+
+  const toggleEditMode = useCallback(() => {
+    setIsEditMode((prev) => !prev)
+  }, [])
+
   const openCheckout = useCallback(() => setCheckoutOpen(true), [])
   const closeCheckout = useCallback(() => setCheckoutOpen(false), [])
 
   const addProduct = useCallback(
-    (input: NewProductInput) => {
-      const newProduct: Product = {
-        id: Date.now(),
+    async (input: NewProductInput) => {
+      const newProductData = {
         name: input.name,
         price: input.price,
         category: input.category,
         barcode: input.barcode.trim() || undefined,
         image: `/placeholder.svg?height=300&width=300&query=${encodeURIComponent(input.name)}`,
       }
-      setProducts((prev) => [...prev, newProduct])
-      return newProduct
+
+      if (isSupabaseConfigured()) {
+        try {
+          const created = await createProductDb(newProductData)
+          setProducts((prev) => [...prev, created])
+          return created
+        } catch (error) {
+          console.error("Failed to save product to Supabase:", error)
+        }
+      }
+
+      const fallbackProduct: Product = {
+        id: Date.now(),
+        ...newProductData,
+      }
+      setProducts((prev) => [...prev, fallbackProduct])
+      return fallbackProduct
     },
     [],
   )
 
-  const addCategory = useCallback((name: string) => {
+  const updateProduct = useCallback(
+    async (productId: number, changes: Partial<Omit<Product, "id">>) => {
+      if (isSupabaseConfigured()) {
+        try {
+          const updated = await updateProductDb(productId, changes)
+          setProducts((prev) => prev.map((product) => (product.id === productId ? updated : product)))
+          return updated
+        } catch (error) {
+          console.error("Failed to update product in Supabase:", error)
+        }
+      }
+
+      setProducts((prev) =>
+        prev.map((product) => (product.id === productId ? { ...product, ...changes } : product)),
+      )
+      return products.find((product) => product.id === productId) ?? null
+    },
+    [products],
+  )
+
+  const addCategory = useCallback(async (name: string) => {
     const trimmed = name.trim()
     if (!trimmed) return
     const id = slugify(trimmed) || `cat-${Date.now()}`
+    const newCategory = { id, name: trimmed }
+
+    if (isSupabaseConfigured()) {
+      try {
+        const created = await createCategoryDb(newCategory)
+        setCategories((prev) => {
+          if (prev.some((c) => c.id === created.id)) return prev
+          return [...prev, created]
+        })
+        return created
+      } catch (error) {
+        console.error("Failed to save category to Supabase:", error)
+      }
+    }
+
     setCategories((prev) => {
-      if (prev.some((c) => c.id === id)) return prev
-      return [...prev, { id, name: trimmed }]
+      if (prev.some((c) => c.id === newCategory.id)) return prev
+      return [...prev, newCategory]
     })
+    return newCategory
   }, [])
 
   // Subtle beep for unknown-barcode alerts using the Web Audio API
@@ -232,40 +329,58 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const processScan = useCallback(
     (code: string) => {
-      const match = productsRef.current.find((p) => p.barcode === code)
+      const match = productsRef.current.find((p) => p.barcode === code || String(p.id) === code)
       if (match) {
+        if (isEditMode) {
+          toast.success("Admin scan detected", { description: "Product barcode filled for editing" })
+          openEditProduct(match)
+          return
+        }
+
         addToCart(match)
         triggerCartFlash()
         toast.success(`Scanned: ${match.name}`, { description: `Barcode ${code}` })
-      } else {
-        beep()
-        toast.warning("Unknown barcode", { description: `No product for ${code}. Add it now.` })
+        return
+      }
+
+      if (isEditMode && addProductOpen) {
+        setPrefilledBarcode(code)
+        toast.success("Barcode filled into Add Product form")
+        return
+      }
+
+      beep()
+      toast.warning("Product not found", { description: `Barcode ${code} does not match inventory` })
+      if (!isEditMode) {
         openAddProduct(code)
       }
     },
-    [addToCart, beep, openAddProduct, triggerCartFlash],
+    [addToCart, addProductOpen, beep, isEditMode, openAddProduct, openEditProduct, triggerCartFlash],
   )
 
   // Global hardware barcode scanner: buffers rapid keystrokes ending in Enter
   useEffect(() => {
     const bufferRef = { value: "" }
     let lastTime = 0
+    let clearTimer = 0
+
+    const resetBuffer = () => {
+      bufferRef.value = ""
+      lastTime = 0
+      if (clearTimer) {
+        window.clearTimeout(clearTimer)
+        clearTimer = 0
+      }
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       // Let manual typing in form fields behave normally
       if (isEditableTarget(e.target)) return
-
-      const now = Date.now()
-      // Hardware scanners type very fast; a slow gap means human typing -> reset buffer
-      if (now - lastTime > 80) {
-        bufferRef.value = ""
-      }
-      lastTime = now
+      if (e.ctrlKey || e.altKey || e.metaKey) return
 
       if (e.key === "Enter") {
         const code = bufferRef.value
-        bufferRef.value = ""
-        // Only treat as a scan when a real buffered code exists (ignores manual Enter)
+        resetBuffer()
         if (code.length >= 3) {
           e.preventDefault()
           processScan(code)
@@ -273,13 +388,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return
       }
 
-      if (e.key.length === 1) {
-        bufferRef.value += e.key
+      if (e.key.length !== 1) return
+
+      const now = performance.now()
+      if (lastTime && now - lastTime > 60) {
+        resetBuffer()
       }
+      lastTime = now
+      bufferRef.value += e.key
+
+      if (clearTimer) window.clearTimeout(clearTimer)
+      clearTimer = window.setTimeout(resetBuffer, 400)
     }
 
     window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+      if (clearTimer) window.clearTimeout(clearTimer)
+    }
   }, [processScan])
 
   const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0)
@@ -297,6 +423,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         itemCount,
         products,
         addProduct,
+        updateProduct,
         categories,
         addCategory,
         scannerActive: true,
@@ -305,6 +432,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         prefilledBarcode,
         openAddProduct,
         closeAddProduct,
+        isEditMode,
+        toggleEditMode,
+        editingProduct,
+        editProductOpen,
+        openEditProduct,
+        closeEditProduct,
         checkoutOpen,
         openCheckout,
         closeCheckout,

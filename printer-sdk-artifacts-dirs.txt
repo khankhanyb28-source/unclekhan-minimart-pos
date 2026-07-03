@@ -1,0 +1,5 @@
+﻿C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\Android SDK\BlueToothDEMO\app\build
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\Android SDK\USBDEMO\app\build
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\Android SDK\WIFIDEMO\app\build
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\Android SDK\WIFIDEMO\bin
+C:\Users\Meyette\unclekhan-minimart-pos\printer-sdk\Android SDK\WIFIDEMO\gen

@@ -39,14 +39,14 @@ export default function AddProductModal() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addProductOpen, prefilledBarcode])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const parsedPrice = Number.parseFloat(price)
     if (!name.trim() || Number.isNaN(parsedPrice) || parsedPrice < 0 || !category) {
       toast.error("Please fill in a name, valid price, and category")
       return
     }
-    const created = addProduct({ name: name.trim(), price: parsedPrice, category, barcode })
+    const created = await addProduct({ name: name.trim(), price: parsedPrice, category, barcode })
     addToCart(created)
     toast.success(`Added ${created.name} to inventory`)
     closeAddProduct()

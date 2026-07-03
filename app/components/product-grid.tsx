@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { PlusCircle } from "lucide-react"
+import { Edit3, PlusCircle } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { useCart } from "../context/cart-context"
@@ -12,7 +12,7 @@ interface ProductGridProps {
 }
 
 export default function ProductGrid({ category, searchQuery }: ProductGridProps) {
-  const { addToCart, products } = useCart()
+  const { addToCart, products, isEditMode, openEditProduct } = useCart()
 
   const filteredProducts = products.filter((product) => {
     const matchesCategory = category === "all" || product.category === category
@@ -25,8 +25,8 @@ export default function ProductGrid({ category, searchQuery }: ProductGridProps)
       {filteredProducts.map((product) => (
         <Card
           key={product.id}
-          className="overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer group bg-white border-slate-200"
-          onClick={() => addToCart(product)}
+          className="relative overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer group bg-white border-slate-200"
+          onClick={() => (isEditMode ? openEditProduct(product) : addToCart(product))}
         >
           <div className="relative aspect-square">
             <div className="absolute inset-0 flex items-center justify-center bg-blue-600/80 opacity-0 transition-opacity group-hover:opacity-100 z-10">
@@ -34,10 +34,25 @@ export default function ProductGrid({ category, searchQuery }: ProductGridProps)
             </div>
             <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
           </div>
+
+          {isEditMode && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                openEditProduct(product)
+              }}
+              className="absolute right-3 top-3 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900/80 text-white shadow-lg transition hover:bg-slate-800"
+            >
+              <Edit3 className="h-4 w-4" />
+            </button>
+          )}
+
           <CardContent className="p-3 bg-white">
             <div>
               <h3 className="font-medium line-clamp-1 text-slate-800">{product.name}</h3>
               <p className="text-sm text-slate-600">₱{product.price.toFixed(2)}</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.15em] text-slate-400">{product.category}</p>
             </div>
           </CardContent>
         </Card>
